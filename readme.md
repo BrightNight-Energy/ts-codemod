@@ -10,6 +10,7 @@ For example, will turn:
 ```typescript
 import myModule from "./myModule";
 import { type Type, Class } from "./myMixedModule";
+import myJson from "./myJson.json";
 ```
 
 into
@@ -17,9 +18,8 @@ into
 ```typescript
 import myModule from "./myModule.js";
 import { type Type, Class } from "./myMixedModule.js";
+import myJson from "./myJson.json" with { type: 'json' };
 ```
-
-Will ignore '.svg' imports.
 
 ## Installation
 

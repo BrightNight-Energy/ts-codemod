@@ -3,23 +3,37 @@ import path from 'node:path';
 import type { Project } from 'ts-morph';
 
 function convertImportsToJs(project: Project, filePath: string) {
-  const sourceFile = project.getSourceFile(filePath);
-  if (!sourceFile) return;
+  const sourceFile = project.addSourceFileAtPathIfExists(filePath);
+  if (!sourceFile) {
+    // biome-ignore lint/suspicious/noConsole: ok here
+    console.error(`File not found in ts-morph project: ${filePath}`);
+    return;
+  }
 
   sourceFile.getImportDeclarations().forEach((importDeclaration) => {
     const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
 
-    if (
-      moduleSpecifier.startsWith('.') &&
-      !moduleSpecifier.endsWith('.js') &&
-      !moduleSpecifier.includes('.svg')
-    ) {
+    if (!moduleSpecifier.startsWith('.') || moduleSpecifier.includes('.svg')) {
+      return;
+    }
+
+    if (moduleSpecifier.endsWith('.json')) {
+      const importText = importDeclaration.getText();
+      const updatedText = importText.replace(
+        new RegExp(`(['"])${moduleSpecifier}\\1;?$`), // Match existing import specifier
+        `$1${moduleSpecifier}$1 with { type: 'json' };`,
+      );
+      importDeclaration.replaceWithText(updatedText);
+      return;
+    }
+
+    if (!moduleSpecifier.endsWith('.js')) {
       const updatedSpecifier = `${moduleSpecifier}.js`;
       importDeclaration.setModuleSpecifier(updatedSpecifier);
     }
   });
   // biome-ignore lint/suspicious/noConsole: ok here
-  console.log(' ✏️ save', sourceFile.getFilePath().toString());
+  console.log('  ✏️', sourceFile.getFilePath().toString());
   sourceFile.saveSync();
 }
 

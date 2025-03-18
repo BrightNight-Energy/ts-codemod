@@ -33,11 +33,8 @@ beforeEach(() => {
 
 afterEach(() => {
   // Clean up test directory
-  if (fs.existsSync(testFilePath)) {
-    fs.unlinkSync(testFilePath);
-  }
   if (fs.existsSync(tempDir)) {
-    fs.rmdirSync(tempDir);
+    fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
 
@@ -53,6 +50,8 @@ describe('convertImportsToJs', () => {
     expect(updatedContent).toContain('import { Project } from "ts-morph";');
     expect(updatedContent).toContain('import type { Type } from "./myTypes.js";');
     expect(updatedContent).toContain('import { type Type, Class } from "./myMixedModule.js";');
+
+    fs.unlinkSync(testFilePath);
   });
 
   it('should not modify non-relative imports', () => {
@@ -65,5 +64,26 @@ describe('convertImportsToJs', () => {
     expect(updatedContent).toBe(`import express from "express";`);
 
     fs.unlinkSync(absoluteImportTestFile);
+  });
+
+  it('should modify json imports', () => {
+    const jsonImportTestFile = path.join(tempDir, 'json-import.ts');
+    fs.writeFileSync(
+      jsonImportTestFile,
+      "import json1 from '../myJsonFile.json';\n" +
+        "import json2 from '../myJsonFile2.json' with { type: 'json' };",
+    );
+
+    processTarget(project, jsonImportTestFile);
+
+    const updatedContent = fs.readFileSync(jsonImportTestFile, 'utf-8');
+    expect(updatedContent).toContain(
+      "import json1 from '../myJsonFile.json' with { type: 'json' };",
+    );
+    expect(updatedContent).toContain(
+      "import json2 from '../myJsonFile2.json' with { type: 'json' };",
+    );
+
+    fs.unlinkSync(jsonImportTestFile);
   });
 });
