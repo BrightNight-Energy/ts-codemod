@@ -1,6 +1,5 @@
 {
   "repositoryUrl": "https://github.com/BrightNight-Energy/ts-ecma-import-codmod",
-  "branches": ["get-cicd-running"],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",

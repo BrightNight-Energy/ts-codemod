@@ -33,7 +33,7 @@ jobs:
     name: Publish to NPM
     needs: [ run-tests ]
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: checkout
         uses: actions/checkout@v4
