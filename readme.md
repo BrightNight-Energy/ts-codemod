@@ -19,6 +19,8 @@ import myModule from "./myModule.js";
 import { type Type, Class } from "./myMixedModule.js";
 ```
 
+Will ignore '.svg' imports.
+
 ## Installation
 
 ```shell
