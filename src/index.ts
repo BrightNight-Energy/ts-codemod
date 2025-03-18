@@ -11,6 +11,7 @@ program
   .description('Convert TypeScript relative imports to .js extensions')
   .argument('<directory>', 'Source directory')
   .option('-c, --config <path>', 'Path to tsconfig.json', 'tsconfig.json')
+  .option('-t, --type <type>', 'Type of codemod, default .js', '.js')
   .parse(process.argv);
 
 const options = program.opts();
@@ -18,6 +19,14 @@ const sourceDir = path.resolve(program.args[0] ?? '');
 
 const project = new Project({ tsConfigFilePath: options.config });
 
-const count = processTarget(project, sourceDir);
+type AllowedTypes = '.js' | 'mui-icons';
+
+const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons']
+
+if (!allTypes.includes(options.type)) {
+  throw new Error(` Specified type '${options.type}' not supported.`);
+}
+
+const count = processTarget(project, sourceDir, options.type);
 // biome-ignore lint/suspicious/noConsole: ok here
-console.log(`🚀 Converted all relative imports to .js for ${count} file${count > 1 ? 's' : ''}`);
+console.log(`🚀 Converted imports for ${count} file${count > 1 ? 's' : ''}`);

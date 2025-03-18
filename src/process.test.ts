@@ -87,3 +87,22 @@ describe('convertImportsToJs', () => {
     fs.unlinkSync(jsonImportTestFile);
   });
 });
+
+describe('test convert mui icons', () => {
+  it('modify mui icons', () => {
+    const absoluteImportTestFile = path.join(tempDir, 'MuiIcons.tsx');
+    fs.writeFileSync(
+      absoluteImportTestFile,
+      "import MyIcon from '@mui/icons-material/Icon';\n" +
+        "import { Another } from '@mui/icons-material';",
+    );
+
+    processTarget(project, absoluteImportTestFile, 'mui-icons');
+
+    const updatedContent = fs.readFileSync(absoluteImportTestFile, 'utf-8');
+    expect(updatedContent).toContain("import { Icon as MyIcon } from '@mui/icons-material';");
+    expect(updatedContent).toContain("import { Another } from '@mui/icons-material';");
+
+    fs.unlinkSync(absoluteImportTestFile);
+  });
+});
