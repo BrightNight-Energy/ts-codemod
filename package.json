@@ -12,7 +12,7 @@
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "ts-ecma-import-codmod": "./dist/index.js"
+    "ts-ecma-import-codmod": "./dist/src/index.js"
   },
   "dependencies": {
     "commander": "^13.1.0",
