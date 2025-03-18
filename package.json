@@ -1,0 +1,38 @@
+{
+  "name": "ts-ecma-import-codmod",
+  "version": "1.0.0",
+  "description": "A codemod tool to transform relative imports to `.js` standard, common for ECMA modules",
+  "keywords": [
+    "codemod",
+    "typescript",
+    "ecma"
+  ],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "ts-ecma-import-codmod": "./dist/index.js"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "ts-morph": "^25.0.1",
+    "tsx": "^4.19.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "biome lint --write src/ && tsc --noEmit -p .",
+    "format": "biome format --write src/",
+    "check": "biome check --write src/",
+    "check-no-fix": "biome check src/ && tsc --noEmit -p .",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "files": ["dist"]
+}

@@ -1,0 +1,56 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  NODE_VERSION: '20.12.0'
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache node modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install and test server
+        run: |
+          npm install
+          npm run check-no-fix
+          npm test
+
+  publish:
+    name: Publish to NPM
+    needs: [ run-tests ]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.CICD_RELEASE_GITHUB_TOKEN }}
+      - name: Install semantic-release and its related plugins
+        run: |
+          npm install -D semantic-release @semantic-release/changelog @semantic-release/git
+          npm install -D @semantic-release/npm conventional-changelog-conventionalcommits
+      - name: Create github release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.CICD_RELEASE_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
