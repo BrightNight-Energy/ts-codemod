@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { processTarget } from './process.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { Project } from 'ts-morph';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { processTarget } from './process.js';
 
 // Temporary test file setup
 const tempDir = path.join(__dirname, 'temp');

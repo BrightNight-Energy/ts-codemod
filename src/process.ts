@@ -1,6 +1,6 @@
-import type { Project } from 'ts-morph';
-import path from 'node:path';
 import fs from 'node:fs';
+import path from 'node:path';
+import type { Project } from 'ts-morph';
 
 function convertImportsToJs(project: Project, filePath: string) {
   const sourceFile = project.getSourceFile(filePath);
