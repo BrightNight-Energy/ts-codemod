@@ -1,3 +1,9 @@
+## 1.0.0 (2025-03-18)
+
+### Features
+
+* Support converting JSON imports ([#2](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/issues/2)) ([697182a](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/commit/697182af4d85b611b9adcd19bf9fc0cc4bf787f2))
+
 ## [1.0.2](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/compare/v1.0.1...v1.0.2) (2025-03-18)
 
 ### Bug Fixes

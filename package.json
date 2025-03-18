@@ -1,6 +1,6 @@
 {
   "name": "ts-ecma-import-codmod",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "description": "A codemod tool to transform relative imports to `.js` standard, common for ECMA modules",
   "keywords": [
     "codemod",
