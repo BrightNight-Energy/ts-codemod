@@ -6,6 +6,19 @@
 
 Codmod to turn all Typescript imports to '.js', as customary for ECMA modules.
 
+For example, will turn:
+```typescript
+import myModule from "./myModule";
+import { type Type, Class } from "./myMixedModule";
+```
+
+into
+
+```typescript
+import myModule from "./myModule.js";
+import { type Type, Class } from "./myMixedModule.js";
+```
+
 ## Installation
 
 ```shell
