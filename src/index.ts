@@ -3,10 +3,11 @@ import path from 'node:path';
 import { Command } from 'commander';
 import { Project } from 'ts-morph';
 import { processTarget } from './process.js';
+import packageJson from '../package.json' with { type: 'json' };
 
 const program = new Command();
 program
-  .version('1.0.1')
+  .version(packageJson.version)
   .description('Convert TypeScript relative imports to .js extensions')
   .argument('<directory>', 'Source directory')
   .option('-c, --config <path>', 'Path to tsconfig.json', 'tsconfig.json')
