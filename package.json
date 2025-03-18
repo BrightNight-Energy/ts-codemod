@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "commander": "^13.1.0",
-    "ts-morph": "^25.0.1",
-    "tsx": "^4.19.3"
+    "ts-morph": "^25.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
