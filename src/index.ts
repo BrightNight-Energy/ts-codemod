@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { Project } from 'ts-morph';
 import path from 'node:path';
 import { Command } from 'commander';
+import { Project } from 'ts-morph';
 import { processTarget } from './process.js';
 
 const program = new Command();
