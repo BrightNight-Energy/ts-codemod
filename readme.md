@@ -1,5 +1,8 @@
 # Typescript '.js' import Codemod
 
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+![GitHub CI](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/actions/workflows/cicd.yml/badge.svg)
+
 Codmod to turn all Typescript imports to '.js', as customary for ECMA modules.
 
 ## Installation
