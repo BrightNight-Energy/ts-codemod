@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/compare/v1.0.1...v1.0.2) (2025-03-18)
+
+### Bug Fixes
+
+* Fix bin script ([a19eccf](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/commit/a19eccf3e864956b130c999d4c0cdcd2498eb3ef))
+
 ## [1.0.1](https://github.com/BrightNight-Energy/ts-ecma-import-codmod/compare/v1.0.0...v1.0.1) (2025-03-18)
 
 ### Bug Fixes
