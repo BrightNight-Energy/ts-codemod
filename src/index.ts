@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { Project } from 'ts-morph';
 import packageJson from '../package.json' with { type: 'json' };
 import { processTarget } from './process.js';
+import type { AllowedTypes } from './types.js';
 
 const program = new Command();
 program
@@ -19,9 +20,7 @@ const sourceDir = path.resolve(program.args[0] ?? '');
 
 const project = new Project({ tsConfigFilePath: options.config });
 
-type AllowedTypes = '.js' | 'mui-icons';
-
-const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons']
+const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons', 'remove-.js'];
 
 if (!allTypes.includes(options.type)) {
   throw new Error(` Specified type '${options.type}' not supported.`);

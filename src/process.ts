@@ -1,8 +1,37 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Project } from 'ts-morph';
+import type { AllowedTypes } from './types.js';
 
-const ignoredFileExtensions = ['.svg', '.png', '.css']
+const ignoredFileExtensions = ['.svg', '.png', '.css'];
+
+function removeJsImports(project: Project, filePath: string) {
+  const sourceFile = project.addSourceFileAtPathIfExists(filePath);
+  if (!sourceFile) {
+    // biome-ignore lint/suspicious/noConsole: ok here
+    console.error(`File not found in ts-morph project: ${filePath}`);
+    return;
+  }
+
+  let modified = false;
+
+  sourceFile.getImportDeclarations().forEach((importDecl) => {
+    const moduleSpecifier = importDecl.getModuleSpecifierValue();
+
+    // If the import ends with .js, remove the extension
+    if (moduleSpecifier.endsWith('.js')) {
+      importDecl.setModuleSpecifier(moduleSpecifier.replace(/\.js$/, ''));
+      modified = true;
+    }
+  });
+
+  // Save the file only if changes were made
+  if (modified) {
+    // biome-ignore lint/suspicious/noConsole: ok here
+    console.log('  ✏', sourceFile.getFilePath().toString());
+    sourceFile.saveSync();
+  }
+}
 
 function convertImportsToJs(project: Project, filePath: string) {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
@@ -15,7 +44,10 @@ function convertImportsToJs(project: Project, filePath: string) {
   sourceFile.getImportDeclarations().forEach((importDeclaration) => {
     const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
 
-    if (!moduleSpecifier.startsWith('.') || ignoredFileExtensions.some((ext) => moduleSpecifier.includes(ext))) {
+    if (
+      !moduleSpecifier.startsWith('.') ||
+      ignoredFileExtensions.some((ext) => moduleSpecifier.includes(ext))
+    ) {
       return;
     }
 
@@ -35,7 +67,7 @@ function convertImportsToJs(project: Project, filePath: string) {
     }
   });
   // biome-ignore lint/suspicious/noConsole: ok here
-  console.log('  ✏️', sourceFile.getFilePath().toString());
+  console.log('  ✏', sourceFile.getFilePath().toString());
   sourceFile.saveSync();
 }
 
@@ -78,19 +110,20 @@ function convertMuiIcons(project: Project, filePath: string) {
 
     sourceFile.saveSync();
     // biome-ignore lint/suspicious/noConsole: ok here
-    console.log('  ✏️', sourceFile.getFilePath().toString());
+    console.log('  ✏', sourceFile.getFilePath().toString());
   });
 }
 
-const callbackMap = {
+const callbackMap: Record<AllowedTypes, typeof convertImportsToJs> = {
   '.js': convertImportsToJs,
+  'remove-.js': removeJsImports,
   'mui-icons': convertMuiIcons,
 };
 
 export function processTarget(
   project: Project,
   target: string,
-  type: '.js' | 'mui-icons' = '.js',
+  type: AllowedTypes = '.js',
   initCount = 0,
 ) {
   const callback = callbackMap[type];
