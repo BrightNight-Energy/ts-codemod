@@ -75,6 +75,7 @@ import * as yup from "yup";
 import type { AnySchema } from "yup";
 ```
 
+into
 ```typescript
 import myModule, { type Type, Class } from "./myModule.js";
 import { Project, type Stuff } from "ts-morph";
