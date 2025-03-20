@@ -83,7 +83,7 @@ import { AnySchema } from "yup"; // note: import type was dropped
 import { Data } from "plotly.js";
 ```
 
-> [!A note on type imports]
+> [!NOTE]
 > As noted in the comment above, the 'Type' modifier in the import statement may be dropped.
 > A linter like [biome](https://biomejs.dev/) will add these back in.
 
