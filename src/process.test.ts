@@ -116,6 +116,37 @@ describe('convertImportsToJs', () => {
   });
 });
 
+describe('test merge duplicates', () => {
+  it('should merge duplicates', () => {
+    fs.writeFileSync(
+      testFilePath,
+      'import myModule from "./myModule.js";\n' +
+        'import { Project } from "ts-morph";\n' +
+        'import { type Stuff } from "ts-morph";\n' +
+        'import { type Type, Class } from "./myModule.js";\n' +
+        'import * as yup from "yup";\n' +
+        'import type { AnySchema } from "yup";\n' +
+        'import another from "../anotherModule";\n' +
+        'import { Data } from "plotly.js";',
+    );
+    project.addSourceFileAtPath(testFilePath);
+
+    processTarget(project, tempDir, 'merge');
+
+    // Read the modified file
+    const updatedContent = fs.readFileSync(testFilePath, 'utf-8');
+
+    expect(updatedContent).toContain('import myModule, { type Type, Class } from "./myModule.js";');
+    expect(updatedContent).toContain('import { Project, type Stuff } from "ts-morph";');
+    expect(updatedContent).toContain('import another from "../anotherModule";');
+    expect(updatedContent).toContain('import { Data } from "plotly.js";');
+    expect(updatedContent).toContain('import * as yup from "yup";');
+    expect(updatedContent).toContain('import { AnySchema } from "yup";');
+
+    fs.unlinkSync(testFilePath);
+  });
+});
+
 describe('test convert mui icons', () => {
   it('modify mui icons', () => {
     const absoluteImportTestFile = path.join(tempDir, 'MuiIcons.tsx');

@@ -20,7 +20,7 @@ const sourceDir = path.resolve(program.args[0] ?? '');
 
 const project = new Project({ tsConfigFilePath: options.config });
 
-const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons', 'remove-.js'];
+const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons', 'remove-.js', 'merge'];
 
 if (!allTypes.includes(options.type)) {
   // biome-ignore lint/suspicious/noConsole: ok here

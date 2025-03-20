@@ -63,6 +63,30 @@ into
 import myModule from "./myModule";
 ```
 
+### Merge imports
+
+Will turn
+```typescript
+import myModule from "./myModule.js";
+import { Project } from "ts-morph";
+import { type Stuff } from "ts-morph";
+import { type Type, Class } from "./myModule.js";
+import * as yup from "yup";
+import type { AnySchema } from "yup";
+```
+
+```typescript
+import myModule, { type Type, Class } from "./myModule.js";
+import { Project, type Stuff } from "ts-morph";
+import * as yup from "yup";
+import { AnySchema } from "yup"; // note: import type was dropped
+import { Data } from "plotly.js";
+```
+
+> [!A note on type imports]
+> As noted in the comment above, the 'Type' modifier in the import statement may be dropped.
+> A linter like [biome](https://biomejs.dev/) will add these back in.
+
 ## Installation
 
 ```shell
