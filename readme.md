@@ -46,6 +46,23 @@ into
 import { Icon as myIcon } from "@mui/material-icons";
 ```
 
+### Remove .js imports
+
+```shell
+ts-import-codemod src/ -c tsconfig.json -t remove-.js
+```
+
+For example, will turn:
+```typescript
+import myModule from "./myModule.js";
+```
+
+into
+
+```typescript
+import myModule from "./myModule";
+```
+
 ## Installation
 
 ```shell

@@ -15,20 +15,11 @@ beforeEach(() => {
     fs.mkdirSync(tempDir);
   }
 
-  fs.writeFileSync(
-    testFilePath,
-    'import myModule from "./myModule";\n' +
-      'import { Project } from "ts-morph";\n' +
-      'import type { Type } from "./myTypes";\n' +
-      'import { type Type, Class } from "./myMixedModule";\n' +
-      'import another from "../anotherModule";',
-  );
   // Create a test TypeScript file with relative imports
   project = new Project({
     tsConfigFilePath: 'tsconfig.json',
     skipAddingFilesFromTsConfig: true,
   });
-  project.addSourceFileAtPath(testFilePath);
 });
 
 afterEach(() => {
@@ -40,6 +31,16 @@ afterEach(() => {
 
 describe('convertImportsToJs', () => {
   it('should append .js to relative imports', () => {
+    fs.writeFileSync(
+      testFilePath,
+      'import myModule from "./myModule";\n' +
+        'import { Project } from "ts-morph";\n' +
+        'import type { Type } from "./myTypes";\n' +
+        'import { type Type, Class } from "./myMixedModule";\n' +
+        'import another from "../anotherModule";',
+    );
+    project.addSourceFileAtPath(testFilePath);
+
     processTarget(project, tempDir);
 
     // Read the modified file
@@ -50,6 +51,33 @@ describe('convertImportsToJs', () => {
     expect(updatedContent).toContain('import { Project } from "ts-morph";');
     expect(updatedContent).toContain('import type { Type } from "./myTypes.js";');
     expect(updatedContent).toContain('import { type Type, Class } from "./myMixedModule.js";');
+
+    fs.unlinkSync(testFilePath);
+  });
+
+  it('should remove .js to relative imports', () => {
+    fs.writeFileSync(
+      testFilePath,
+      'import myModule from "./myModule.js";\n' +
+        'import { Project } from "ts-morph";\n' +
+        'import type { Type } from "./myTypes";\n' +
+        'import { type Type, Class } from "./myMixedModule.js";\n' +
+        'import another from "../anotherModule";\n' +
+        'import { Data } from "plotly.js";',
+    );
+    project.addSourceFileAtPath(testFilePath);
+
+    processTarget(project, tempDir, 'remove-.js');
+
+    // Read the modified file
+    const updatedContent = fs.readFileSync(testFilePath, 'utf-8');
+
+    expect(updatedContent).toContain('import myModule from "./myModule";');
+    expect(updatedContent).toContain('import another from "../anotherModule";');
+    expect(updatedContent).toContain('import { Project } from "ts-morph";');
+    expect(updatedContent).toContain('import type { Type } from "./myTypes";');
+    expect(updatedContent).toContain('import { type Type, Class } from "./myMixedModule";');
+    expect(updatedContent).toContain('import { Data } from "plotly.js";');
 
     fs.unlinkSync(testFilePath);
   });
