@@ -10,7 +10,7 @@ function removeJsImports(project: Project, filePath: string) {
   if (!sourceFile) {
     // biome-ignore lint/suspicious/noConsole: ok here
     console.error(`File not found in ts-morph project: ${filePath}`);
-    return;
+    return 0;
   }
 
   let modified = false;
@@ -30,7 +30,10 @@ function removeJsImports(project: Project, filePath: string) {
     // biome-ignore lint/suspicious/noConsole: ok here
     console.log('  ✏', sourceFile.getFilePath().toString());
     sourceFile.saveSync();
+    return 1;
   }
+
+  return 0;
 }
 
 function convertImportsToJs(project: Project, filePath: string) {
@@ -38,7 +41,7 @@ function convertImportsToJs(project: Project, filePath: string) {
   if (!sourceFile) {
     // biome-ignore lint/suspicious/noConsole: ok here
     console.error(`File not found in ts-morph project: ${filePath}`);
-    return;
+    return 0;
   }
 
   sourceFile.getImportDeclarations().forEach((importDeclaration) => {
@@ -69,6 +72,8 @@ function convertImportsToJs(project: Project, filePath: string) {
   // biome-ignore lint/suspicious/noConsole: ok here
   console.log('  ✏', sourceFile.getFilePath().toString());
   sourceFile.saveSync();
+
+  return 1;
 }
 
 function convertMuiIcons(project: Project, filePath: string) {
@@ -76,8 +81,9 @@ function convertMuiIcons(project: Project, filePath: string) {
   if (!sourceFile) {
     // biome-ignore lint/suspicious/noConsole: ok here
     console.error(`File not found in ts-morph project: ${filePath}`);
-    return;
+    return 0;
   }
+  let count = 0;
 
   project.getSourceFiles().forEach((sourceFile) => {
     // Find all import declarations in the file.
@@ -105,16 +111,19 @@ function convertMuiIcons(project: Project, filePath: string) {
 
           importDecl.setModuleSpecifier('@mui/icons-material');
         }
+
+        sourceFile.saveSync();
+        // biome-ignore lint/suspicious/noConsole: ok here
+        console.log('  ✏', sourceFile.getFilePath().toString());
+        count += 1;
       }
     });
-
-    sourceFile.saveSync();
-    // biome-ignore lint/suspicious/noConsole: ok here
-    console.log('  ✏', sourceFile.getFilePath().toString());
   });
+
+  return count;
 }
 
-const callbackMap: Record<AllowedTypes, typeof convertImportsToJs> = {
+const callbackMap: Record<AllowedTypes, typeof convertMuiIcons> = {
   '.js': convertImportsToJs,
   'remove-.js': removeJsImports,
   'mui-icons': convertMuiIcons,
@@ -127,22 +136,19 @@ export function processTarget(
   initCount = 0,
 ) {
   const callback = callbackMap[type];
-
   let count = initCount;
   if (fs.statSync(target).isDirectory()) {
     const files = fs.readdirSync(target);
     for (const file of files) {
       const fullPath = path.join(target, file);
       if (fs.statSync(fullPath).isDirectory()) {
-        processTarget(project, fullPath, type, count);
+        count = processTarget(project, fullPath, type, count);
       } else if (fullPath.endsWith('.ts') || fullPath.endsWith('.tsx')) {
-        callback(project, fullPath);
-        count += 1;
+        count += callback(project, fullPath);
       }
     }
   } else if (target.endsWith('.ts') || target.endsWith('.tsx')) {
-    callback(project, target);
-    count += 1;
+    count += callback(project, target);
   }
   return count;
 }

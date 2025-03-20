@@ -23,9 +23,10 @@ const project = new Project({ tsConfigFilePath: options.config });
 const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons', 'remove-.js'];
 
 if (!allTypes.includes(options.type)) {
-  throw new Error(` Specified type '${options.type}' not supported.`);
+  // biome-ignore lint/suspicious/noConsole: ok here
+  console.error(`❌ Specified type '${options.type}' not supported.`);
+} else {
+  const count = processTarget(project, sourceDir, options.type);
+  // biome-ignore lint/suspicious/noConsole: ok here
+  console.log(`🚀 Converted imports for ${count} file${count > 1 ? 's' : ''}`);
 }
-
-const count = processTarget(project, sourceDir, options.type);
-// biome-ignore lint/suspicious/noConsole: ok here
-console.log(`🚀 Converted imports for ${count} file${count > 1 ? 's' : ''}`);
