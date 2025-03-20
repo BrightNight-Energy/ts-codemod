@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { Project } from 'ts-morph';
 
-const ignoredFileExtensions = ['.svg', '.png', '.css']
+const ignoredFileExtensions = ['.svg', '.png', '.css'];
 
 function convertImportsToJs(project: Project, filePath: string) {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
@@ -15,7 +15,10 @@ function convertImportsToJs(project: Project, filePath: string) {
   sourceFile.getImportDeclarations().forEach((importDeclaration) => {
     const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
 
-    if (!moduleSpecifier.startsWith('.') || ignoredFileExtensions.some((ext) => moduleSpecifier.includes(ext))) {
+    if (
+      !moduleSpecifier.startsWith('.') ||
+      ignoredFileExtensions.some((ext) => moduleSpecifier.includes(ext))
+    ) {
       return;
     }
 

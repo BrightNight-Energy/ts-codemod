@@ -21,7 +21,7 @@ const project = new Project({ tsConfigFilePath: options.config });
 
 type AllowedTypes = '.js' | 'mui-icons';
 
-const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons']
+const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons'];
 
 if (!allTypes.includes(options.type)) {
   throw new Error(` Specified type '${options.type}' not supported.`);
