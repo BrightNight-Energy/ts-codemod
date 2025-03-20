@@ -93,3 +93,11 @@ import { Data } from "plotly.js";
 ```shell
 npm install -g ts-import-codemod
 ````
+
+## Contributing
+
+All contributions welcome! Make sure to install precommit hooks for complete functionality:
+```shell
+pre-commit install --install-hooks
+pre-commit install --hook-type commit-msg
+```
