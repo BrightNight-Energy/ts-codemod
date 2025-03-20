@@ -1,5 +1,5 @@
 {
-  "repositoryUrl": "https://github.com/BrightNight-Energy/ts-ecma-import-codmod",
+  "repositoryUrl": "https://github.com/BrightNight-Energy/ts-import-codemod",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",

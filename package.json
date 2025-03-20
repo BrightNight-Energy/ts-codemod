@@ -1,7 +1,7 @@
 {
-  "name": "ts-ecma-import-codmod",
+  "name": "ts-import-codemod",
   "version": "1.0.0",
-  "description": "A codemod tool to transform relative imports to `.js` standard, common for ECMA modules",
+  "description": "A codemod tool to transform imports in Typescript",
   "keywords": [
     "codemod",
     "typescript",
@@ -12,7 +12,7 @@
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "ts-ecma-import-codmod": "./dist/src/index.js"
+    "ts-import-codemod": "./dist/src/index.js"
   },
   "dependencies": {
     "commander": "^13.1.0",
