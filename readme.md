@@ -11,7 +11,7 @@
 Codmod to turn all Typescript imports to '.js', as customary for ECMA modules.
 
 ```shell
-ts-ecma-import-codmod src/ -c tsconfig.json
+ts-import-codemod src/ -c tsconfig.json
 ```
 
 For example, will turn:
@@ -32,7 +32,7 @@ import myJson from "./myJson.json" with { type: 'json' };
 ### Update Material UI Icon imports
 
 ```shell
-ts-ecma-import-codmod src/ -c tsconfig.json -t mui-icons
+ts-import-codemod src/ -c tsconfig.json -t mui-icons
 ```
 
 For example, will turn:
@@ -49,7 +49,7 @@ import { Icon as myIcon } from "@mui/material-icons";
 ### Remove .js imports
 
 ```shell
-ts-ecma-import-codmod src/ -c tsconfig.json -t remove-.js
+ts-import-codemod src/ -c tsconfig.json -t remove-.js
 ```
 
 For example, will turn:
