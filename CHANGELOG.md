@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/BrightNight-Energy/ts-import-codemod/compare/v1.0.0...v1.1.0) (2025-03-20)
+
+### Features
+
+* Add codemod for refactoring mui material icon imports ([#4](https://github.com/BrightNight-Energy/ts-import-codemod/issues/4)) ([a366102](https://github.com/BrightNight-Energy/ts-import-codemod/commit/a3661029713114529c099b2a8ea61cef0cb6c22b))
+
 ## 1.0.0 (2025-03-20)
 
 ### Features
