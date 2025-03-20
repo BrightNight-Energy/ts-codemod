@@ -1,1 +1,1 @@
-export type AllowedTypes = '.js' | 'mui-icons' | 'remove-.js';
+export type AllowedTypes = '.js' | 'mui-icons' | 'remove-.js' | 'merge';
