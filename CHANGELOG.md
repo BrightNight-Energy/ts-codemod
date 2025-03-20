@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/BrightNight-Energy/ts-import-codemod/compare/v1.2.0...v1.3.0) (2025-03-20)
+
+### Features
+
+* Add merge imports codemod ([#7](https://github.com/BrightNight-Energy/ts-import-codemod/issues/7)) ([7615332](https://github.com/BrightNight-Energy/ts-import-codemod/commit/761533232bb7334964ed0c66adfb5b21be03fb41))
+
 ## [1.2.0](https://github.com/BrightNight-Energy/ts-import-codemod/compare/v1.1.0...v1.2.0) (2025-03-20)
 
 ### Features
