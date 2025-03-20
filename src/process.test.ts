@@ -62,7 +62,8 @@ describe('convertImportsToJs', () => {
         'import { Project } from "ts-morph";\n' +
         'import type { Type } from "./myTypes";\n' +
         'import { type Type, Class } from "./myMixedModule.js";\n' +
-        'import another from "../anotherModule";',
+        'import another from "../anotherModule";\n' +
+        'import { Data } from "plotly.js";',
     );
     project.addSourceFileAtPath(testFilePath);
 
@@ -76,6 +77,7 @@ describe('convertImportsToJs', () => {
     expect(updatedContent).toContain('import { Project } from "ts-morph";');
     expect(updatedContent).toContain('import type { Type } from "./myTypes";');
     expect(updatedContent).toContain('import { type Type, Class } from "./myMixedModule";');
+    expect(updatedContent).toContain('import { Data } from "plotly.js";');
 
     fs.unlinkSync(testFilePath);
   });

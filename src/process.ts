@@ -19,7 +19,7 @@ function removeJsImports(project: Project, filePath: string) {
     const moduleSpecifier = importDecl.getModuleSpecifierValue();
 
     // If the import ends with .js, remove the extension
-    if (moduleSpecifier.endsWith('.js')) {
+    if (moduleSpecifier.startsWith('.') && moduleSpecifier.endsWith('.js')) {
       importDecl.setModuleSpecifier(moduleSpecifier.replace(/\.js$/, ''));
       modified = true;
     }
