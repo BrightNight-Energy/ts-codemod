@@ -1,5 +1,5 @@
 {
-  "repositoryUrl": "https://github.com/BrightNight-Energy/ts-import-codemod",
+  "repositoryUrl": "https://github.com/BrightNight-Energy/ts-codemod",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
