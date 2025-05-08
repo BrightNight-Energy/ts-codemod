@@ -1,6 +1,6 @@
 import type { Callback } from '../types.js';
 
-export const convertMuiIcons: Callback = (project, filePath) => {
+export const mergeMuiIcons: Callback = (project, filePath) => {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
   if (!sourceFile) {
     console.error(`File not found in ts-morph project: ${filePath}`);

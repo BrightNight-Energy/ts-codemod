@@ -6,6 +6,28 @@
 
 A collection of mostly random codemods you (might) find helpful.
 
+
+## Installation
+
+```shell
+npm install -g @brightnightpower/ts-codemod
+````
+
+## Usage
+
+```
+ts-codemod [options] <directory>
+
+Arguments:
+  directory            Source directory
+
+Options:
+  -V, --version        output the version number
+  -c, --config <path>  Path to tsconfig.json (default: "tsconfig.json")
+  -t, --type <type>    Type of codemod, default .js (default: ".js")
+  -h, --help           display help for command
+```
+
 ## Codemods
 
 ### Update imports to .js
@@ -13,7 +35,7 @@ A collection of mostly random codemods you (might) find helpful.
 Codmod to turn all Typescript imports to '.js', as customary for ECMA modules.
 
 ```shell
-ts-import-codemod src/ -c tsconfig.json
+ts-codemod src/ -t convert-to-.js-imports
 ```
 
 For example, will turn:
@@ -34,7 +56,7 @@ import myJson from "./myJson.json" with { type: 'json' };
 ### Update Material UI Icon imports
 
 ```shell
-ts-import-codemod src/ -c tsconfig.json -t mui-icons
+ts-codemod src/ -t merge-mui-icons
 ```
 
 For example, will turn:
@@ -51,7 +73,7 @@ import { Icon as myIcon } from "@mui/material-icons";
 ### Remove .js imports
 
 ```shell
-ts-import-codemod src/ -c tsconfig.json -t remove-.js
+ts-codemod src/ -t remove-.js-imports
 ```
 
 For example, will turn:
@@ -66,6 +88,10 @@ import myModule from "./myModule";
 ```
 
 ### Merge imports
+
+```shell
+ts-codemod src/ -t merge-duplicate-imports
+```
 
 Will turn
 ```typescript
@@ -92,6 +118,10 @@ import { Data } from "plotly.js";
 
 ### Tanstack's React Query v4 to v5
 
+```shell
+ts-codemod src/ -t react-query-v5-migrate
+```
+
 Will turn
 ```typescript jsx
 useQuery('todos', fetchTodos, { enabled: false });
@@ -103,12 +133,6 @@ into
 useQuery({ queryKey: 'todos', queryFn: fetchTodos, enabled: false });
 useMutation({ mutationFn: createTodo, onSuccess });
 ```
-
-## Installation
-
-```shell
-npm install -g ts-import-codemod
-````
 
 ## Contributing
 
