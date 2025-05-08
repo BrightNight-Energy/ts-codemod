@@ -1,4 +1,11 @@
-import { SyntaxKind } from 'ts-morph';
+import {
+  type ObjectLiteralExpression,
+  type PropertyAssignment,
+  type ShorthandPropertyAssignment,
+  type SpreadAssignment,
+  SyntaxKind,
+  ts,
+} from 'ts-morph';
 import type { Callback } from '../types.js';
 
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: it's fine
@@ -15,9 +22,6 @@ export const reactQueryV5Migrate: Callback = (project, filePath) => {
   const importDecls = sourceFile
     .getImportDeclarations()
     .filter((d) => d.getModuleSpecifierValue() === '@tanstack/react-query');
-  if (importDecls.length === 0) {
-    return { fileCount: 0 };
-  }
 
   for (const importDecl of importDecls) {
     for (const namedImport of importDecl.getNamedImports()) {
@@ -39,9 +43,51 @@ export const reactQueryV5Migrate: Callback = (project, filePath) => {
           // Preserve any existing type arguments
           const typeArgs = call.getTypeArguments().map((t) => t.getText());
           const typeArgText = typeArgs.length ? `<${typeArgs.join(', ')}>` : '';
-          const optsSpread = arg2 ? `, ...${arg2.getText()}` : '';
-          const newText = `${localName}${typeArgText}({ queryKey: ${arg0?.getText()}, queryFn: ${arg1?.getText()}${optsSpread} })`;
-          call.replaceWithText(newText);
+          const props: ts.ObjectLiteralElementLike[] = [
+            ts.factory.createPropertyAssignment('queryKey', arg0?.compilerNode as ts.Expression),
+            ts.factory.createPropertyAssignment('queryFn', arg1?.compilerNode as ts.Expression),
+          ];
+          if (arg2?.getKind() === SyntaxKind.ObjectLiteralExpression) {
+            for (const prop of (arg2 as ObjectLiteralExpression).getProperties()) {
+              if (prop.getKind() === SyntaxKind.PropertyAssignment) {
+                const pa = prop as PropertyAssignment;
+                props.push(
+                  ts.factory.createPropertyAssignment(
+                    pa.getName(),
+                    pa.getInitializer()?.compilerNode as ts.Expression,
+                  ),
+                );
+              } else if (prop.getKind() === SyntaxKind.ShorthandPropertyAssignment) {
+                const spa = prop as ShorthandPropertyAssignment;
+                props.push(
+                  ts.factory.createShorthandPropertyAssignment(
+                    spa.getNameNode().compilerNode as ts.Identifier,
+                  ),
+                );
+              } else if (prop.getKind() === SyntaxKind.SpreadAssignment) {
+                const sa = prop as SpreadAssignment;
+                props.push(
+                  ts.factory.createSpreadAssignment(
+                    sa.getExpression().compilerNode as ts.Expression,
+                  ),
+                );
+              }
+            }
+          }
+          // If arg2 is provided but isn't an object literal, spread it directly
+          if (arg2 && arg2?.getKind() !== SyntaxKind.ObjectLiteralExpression) {
+            props.push(ts.factory.createSpreadAssignment(arg2.compilerNode as ts.Expression));
+          }
+
+          const objLiteral = ts.factory.createObjectLiteralExpression(props);
+          // Print the newly created object literal as it has no real source positions
+          const printer = ts.createPrinter();
+          const printed = printer.printNode(
+            ts.EmitHint.Unspecified,
+            objLiteral,
+            sourceFile.compilerNode,
+          );
+          call.replaceWithText(`${localName}${typeArgText}(${printed})`);
           queryCount += 1;
         }
       }
@@ -62,14 +108,32 @@ export const reactQueryV5Migrate: Callback = (project, filePath) => {
           // Preserve any existing type arguments
           const typeArgs = call.getTypeArguments().map((t) => t.getText());
           const typeArgText = typeArgs.length ? `<${typeArgs.join(', ')}>` : '';
-          const optsSpread = arg1 ? `, ...${arg1.getText()}` : '';
-          const newText = `${localName}${typeArgText}({ mutationFn: ${arg0?.getText()}${optsSpread} })`;
+          // Build options: inline literal props or spread everything else
+          let optsText = '';
+          if (arg1) {
+            if (arg1.getKind() === SyntaxKind.ObjectLiteralExpression) {
+              // strip the braces and inline
+              const inner = arg1.getText().slice(1, -1).trim();
+              optsText = inner ? `, ${inner}` : '';
+            } else {
+              // e.g. mutationOptions
+              optsText = `, ...${arg1.getText()}`;
+            }
+          }
+          const newText = `${localName}${typeArgText}({ mutationFn: ${arg0?.getText()}${optsText} })`;
           call.replaceWithText(newText);
-          mutationCount += 1;
         }
+        mutationCount += 1;
       }
     }
   }
+
+  // Also rename any direct property access .isLoading → .isPending on mutation result objects
+  sourceFile.getDescendantsOfKind(SyntaxKind.PropertyAccessExpression).forEach((access) => {
+    if (access.getName() === 'isLoading') {
+      access.getNameNode().replaceWithText('isPending');
+    }
+  });
 
   sourceFile.saveSync();
 

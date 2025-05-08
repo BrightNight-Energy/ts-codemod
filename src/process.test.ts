@@ -34,12 +34,13 @@ describe('react-query-v5-migrate', () => {
   it('should migrate useQuery and useMutation calls to object syntax', () => {
     fs.writeFileSync(
       testFilePath,
-      "import { useQuery, useMutation } from '@tanstack/react-query';\n" +
+      "import { useQuery, useInfiniteQuery, useMutation } from '@tanstack/react-query';\n" +
         "const data1 = useQuery(['key1'], fetchData1);\n" +
         "const data2 = useQuery(['key2'], fetchData2, queryOptions);\n" +
         'const mut1 = useMutation(handleSubmit);\n' +
         'const mut2 = useMutation(handleSubmit, mutationOptions);\n' +
-        "const infQuery = useInfiniteQuery<Result, HTTPError>(['notifs'], (params) => getNotifications(...params).then((res) => formatNotifications(res, projectIdMap, user?.email)), { enabled });",
+        'const mut3 = useMutation(handleSubmit, { onSuccess: () => null });\n' +
+        "const infQuery = useInfiniteQuery<Result, HTTPError>(['notifs'], (params) => getNotifications(...params).then((res) => formatNotifications(res, projectIdMap, user?.email)), { enabled, onSuccess: () => null });",
     );
     project.addSourceFileAtPath(testFilePath);
 
@@ -55,7 +56,10 @@ describe('react-query-v5-migrate', () => {
       'useMutation({ mutationFn: handleSubmit, ...mutationOptions })',
     );
     expect(updatedContent).toContain(
-      "const infQuery = useInfiniteQuery<Result, HTTPError>({ queryKey: ['notifs'], queryFn: (params) => getNotifications(...params).then((res) => formatNotifications(res, projectIdMap, user?.email) }), { enabled });",
+      'useMutation({ mutationFn: handleSubmit, onSuccess: () => null });',
+    );
+    expect(updatedContent).toContain(
+      "const infQuery = useInfiniteQuery<Result, HTTPError>({ queryKey: ['notifs'], queryFn: (params) => getNotifications(...params).then((res) => formatNotifications(res, projectIdMap, user?.email)), enabled, onSuccess: () => null });",
     );
 
     fs.unlinkSync(testFilePath);

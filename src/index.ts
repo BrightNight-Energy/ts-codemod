@@ -28,9 +28,13 @@ if (!allTypes.includes(options.type)) {
   );
 } else {
   const count = processTarget(project, sourceDir, options.type);
-  console.log(
-    `🚀 In ${count.fileCount} file${count.fileCount > 1 ? 's' : ''}, converted:\n${count.transformed
-      ?.map(({ name, count }) => `  ${count} ${name}`)
-      .join('\n')}`,
-  );
+  if (!count.fileCount) {
+    console.log('No files changed!');
+  } else {
+    console.log(
+      `🚀 In ${count.fileCount} file${count.fileCount > 1 ? 's' : ''}, converted:\n${count.transformed
+        ?.map(({ name, count }) => `  ${count} ${name}`)
+        .join('\n')}`,
+    );
+  }
 }
