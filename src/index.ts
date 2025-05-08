@@ -20,13 +20,23 @@ const sourceDir = path.resolve(program.args[0] ?? '');
 
 const project = new Project({ tsConfigFilePath: options.config });
 
-const allTypes: Array<AllowedTypes> = ['.js', 'mui-icons', 'remove-.js', 'merge'];
+const allTypes: Array<AllowedTypes> = [
+  '.js',
+  'mui-icons',
+  'remove-.js',
+  'merge',
+  'react-query-v5-migrate',
+];
 
 if (!allTypes.includes(options.type)) {
-  // biome-ignore lint/suspicious/noConsole: ok here
-  console.error(`❌ Specified type '${options.type}' not supported.`);
+  console.error(
+    `❌ Specified type '${options.type}' not supported. Must be one of:\n${allTypes.join('\n')}`,
+  );
 } else {
   const count = processTarget(project, sourceDir, options.type);
-  // biome-ignore lint/suspicious/noConsole: ok here
-  console.log(`🚀 Converted imports for ${count} file${count > 1 ? 's' : ''}`);
+  console.log(
+    `🚀 In ${count.fileCount} file${count.fileCount > 1 ? 's' : ''}, converted:\n${count.transformed
+      ?.map(({ name, count }) => `  ${count} ${name}`)
+      .join('\n')}`,
+  );
 }

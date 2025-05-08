@@ -1,14 +1,13 @@
-import type { Project } from 'ts-morph';
+import type { Callback } from '../types.js';
 
-export function removeJsImports(project: Project, filePath: string) {
+export const removeJsImports: Callback = (project, filePath) => {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
   if (!sourceFile) {
-    // biome-ignore lint/suspicious/noConsole: ok here
     console.error(`File not found in ts-morph project: ${filePath}`);
-    return 0;
+    return { fileCount: 0 };
   }
 
-  let modified = false;
+  let modifiedCount = 0;
 
   sourceFile.getImportDeclarations().forEach((importDecl) => {
     const moduleSpecifier = importDecl.getModuleSpecifierValue();
@@ -16,17 +15,16 @@ export function removeJsImports(project: Project, filePath: string) {
     // If the import ends with .js, remove the extension
     if (moduleSpecifier.startsWith('.') && moduleSpecifier.endsWith('.js')) {
       importDecl.setModuleSpecifier(moduleSpecifier.replace(/\.js$/, ''));
-      modified = true;
+      modifiedCount += 1;
     }
   });
 
   // Save the file only if changes were made
-  if (modified) {
-    // biome-ignore lint/suspicious/noConsole: ok here
+  if (modifiedCount) {
     console.log('  ✏', sourceFile.getFilePath().toString());
     sourceFile.saveSync();
-    return 1;
+    return { fileCount: 1, transformed: [{ name: 'removeJsImports', count: modifiedCount }] };
   }
 
-  return 0;
-}
+  return { fileCount: 0 };
+};
