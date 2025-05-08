@@ -37,7 +37,7 @@ const updateCount = (incCount: TransformedCount, totalCount: TransformedCount) =
 export function processTarget(
   project: Project,
   target: string,
-  type: AllowedTypes = '.js',
+  type: AllowedTypes = 'convert-to-.js-imports',
   initCount?: TransformedCount,
 ) {
   const callback = callbackMap[type];
