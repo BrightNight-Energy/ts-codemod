@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/BrightNight-Energy/ts-codemod/compare/v1.4.0...v1.4.1) (2025-05-08)
+
+### Bug Fixes
+
+* Fixes and improvements to react query migrate code ([#12](https://github.com/BrightNight-Energy/ts-codemod/issues/12)) ([ea51ca7](https://github.com/BrightNight-Energy/ts-codemod/commit/ea51ca7bfb5b661e5a6f41f4fbd1596a21ee7288))
+
 ## [1.4.0](https://github.com/BrightNight-Energy/ts-codemod/compare/v1.3.0...v1.4.0) (2025-05-08)
 
 ### Features
