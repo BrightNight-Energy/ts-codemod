@@ -1,8 +1,8 @@
 # Typescript Codemod
 
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
-![GitHub CI](https://github.com/BrightNight-Energy/ts-import-codemod/actions/workflows/cicd.yml/badge.svg)
-[![npm version](https://badge.fury.io/js/ts-import-codemod.svg)](https://badge.fury.io/js/ts-import-codemod)
+![GitHub CI](https://github.com/BrightNight-Energy/ts-codemod/actions/workflows/cicd.yml/badge.svg)
+[![npm version](https://badge.fury.io/js/%40brightnightpower%2Fts-codemod.svg)](https://www.npmjs.com/package/%40brightnightpower%2Fts-codemod)
 
 A collection of mostly random codemods you (might) find helpful.
 
