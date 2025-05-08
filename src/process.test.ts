@@ -34,11 +34,11 @@ describe('react-query-v5-migrate', () => {
   it('should migrate useQuery and useMutation calls to object syntax', () => {
     fs.writeFileSync(
       testFilePath,
-      `import { useQuery, useMutation } from '@tanstack/react-query';\n` +
-        `const data1 = useQuery(['key1'], fetchData1);\n` +
-        `const data2 = useQuery(['key2'], fetchData2, queryOptions);\n` +
-        `const mut1 = useMutation(handleSubmit);\n` +
-        `const mut2 = useMutation(handleSubmit, mutationOptions);`,
+      "import { useQuery, useMutation } from '@tanstack/react-query';\n" +
+        "const data1 = useQuery(['key1'], fetchData1);\n" +
+        "const data2 = useQuery(['key2'], fetchData2, queryOptions);\n" +
+        'const mut1 = useMutation(handleSubmit);\n' +
+        'const mut2 = useMutation(handleSubmit, mutationOptions);',
     );
     project.addSourceFileAtPath(testFilePath);
 
@@ -60,9 +60,9 @@ describe('react-query-v5-migrate', () => {
   it('should respect alias imports for useQuery and useMutation', () => {
     fs.writeFileSync(
       testFilePath,
-      `import { useQuery as q, useMutation as m } from '@tanstack/react-query';\n` +
-        `const data = q(['aliasKey'], aliasFetch);\n` +
-        `const mut = m(aliasMutate);`,
+      "import { useQuery as q, useMutation as m } from '@tanstack/react-query';\n" +
+        "const data = q(['aliasKey'], aliasFetch);\n" +
+        'const mut = m(aliasMutate);',
     );
     project.addSourceFileAtPath(testFilePath);
 

@@ -1,6 +1,7 @@
 import { SyntaxKind } from 'ts-morph';
 import type { Callback } from '../types.js';
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: it's fine
 export const reactQueryV5Migrate: Callback = (project, filePath) => {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
   if (!sourceFile) {
@@ -75,7 +76,7 @@ export const reactQueryV5Migrate: Callback = (project, filePath) => {
   if (mutationCount || queryCount) {
     console.log('  ✏', sourceFile.getFilePath());
     return {
-      fileCount: 0,
+      fileCount: 1,
       transformed: [
         { name: 'useMutations', count: mutationCount },
         { name: 'useQueries', count: queryCount },
