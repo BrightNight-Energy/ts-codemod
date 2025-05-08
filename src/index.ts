@@ -3,13 +3,13 @@ import path from 'node:path';
 import { Command } from 'commander';
 import { Project } from 'ts-morph';
 import packageJson from '../package.json' with { type: 'json' };
-import { processTarget } from './process.js';
+import { callbackMap, processTarget } from './process.js';
 import type { AllowedTypes } from './types.js';
 
 const program = new Command();
 program
   .version(packageJson.version)
-  .description('Convert TypeScript relative imports to .js extensions')
+  .description('Run TypeScript codemods')
   .argument('<directory>', 'Source directory')
   .option('-c, --config <path>', 'Path to tsconfig.json', 'tsconfig.json')
   .option('-t, --type <type>', 'Type of codemod, default .js', '.js')
@@ -20,13 +20,7 @@ const sourceDir = path.resolve(program.args[0] ?? '');
 
 const project = new Project({ tsConfigFilePath: options.config });
 
-const allTypes: Array<AllowedTypes> = [
-  '.js',
-  'mui-icons',
-  'remove-.js',
-  'merge',
-  'react-query-v5-migrate',
-];
+const allTypes = Object.keys(callbackMap) as Array<AllowedTypes>;
 
 if (!allTypes.includes(options.type)) {
   console.error(

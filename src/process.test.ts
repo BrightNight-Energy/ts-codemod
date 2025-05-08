@@ -114,7 +114,7 @@ describe('convertImportsToJs', () => {
     );
     project.addSourceFileAtPath(testFilePath);
 
-    processTarget(project, tempDir, 'remove-.js');
+    processTarget(project, tempDir, 'remove-.js-imports');
 
     // Read the modified file
     const updatedContent = fs.readFileSync(testFilePath, 'utf-8');
@@ -178,7 +178,7 @@ describe('test merge duplicates', () => {
     );
     project.addSourceFileAtPath(testFilePath);
 
-    processTarget(project, tempDir, 'merge');
+    processTarget(project, tempDir, 'merge-duplicate-imports');
 
     // Read the modified file
     const updatedContent = fs.readFileSync(testFilePath, 'utf-8');
@@ -203,7 +203,7 @@ describe('test convert mui icons', () => {
         "import { Another } from '@mui/icons-material';",
     );
 
-    processTarget(project, absoluteImportTestFile, 'mui-icons');
+    processTarget(project, absoluteImportTestFile, 'merge-mui-icons');
 
     const updatedContent = fs.readFileSync(absoluteImportTestFile, 'utf-8');
     expect(updatedContent).toContain("import { Icon as MyIcon } from '@mui/icons-material';");

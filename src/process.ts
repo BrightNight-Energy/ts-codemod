@@ -2,17 +2,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { Project } from 'ts-morph';
 import { convertImportsToJs } from './codemods/convertImportsToJs.js';
-import { convertMuiIcons } from './codemods/convertMuiIcons.js';
 import { mergeDuplicateImports } from './codemods/mergeDuplicateImports.js';
+import { mergeMuiIcons } from './codemods/mergeMuiIcons.js';
 import { reactQueryV5Migrate } from './codemods/reactQueryV5Migrate.js';
 import { removeJsImports } from './codemods/removeJsImports.js';
 import type { AllowedTypes, Callback, TransformedCount } from './types.js';
 
-const callbackMap: Record<AllowedTypes, Callback> = {
-  '.js': convertImportsToJs,
-  'remove-.js': removeJsImports,
-  'mui-icons': convertMuiIcons,
-  merge: mergeDuplicateImports,
+export const callbackMap: Record<AllowedTypes, Callback> = {
+  'convert-to-.js-imports': convertImportsToJs,
+  'remove-.js-imports': removeJsImports,
+  'merge-mui-icons': mergeMuiIcons,
+  'merge-duplicate-imports': mergeDuplicateImports,
   'react-query-v5-migrate': reactQueryV5Migrate,
 };
 
@@ -37,7 +37,7 @@ const updateCount = (incCount: TransformedCount, totalCount: TransformedCount) =
 export function processTarget(
   project: Project,
   target: string,
-  type: AllowedTypes = '.js',
+  type: AllowedTypes = 'convert-to-.js-imports',
   initCount?: TransformedCount,
 ) {
   const callback = callbackMap[type];
