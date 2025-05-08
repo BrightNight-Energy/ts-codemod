@@ -38,7 +38,8 @@ describe('react-query-v5-migrate', () => {
         "const data1 = useQuery(['key1'], fetchData1);\n" +
         "const data2 = useQuery(['key2'], fetchData2, queryOptions);\n" +
         'const mut1 = useMutation(handleSubmit);\n' +
-        'const mut2 = useMutation(handleSubmit, mutationOptions);',
+        'const mut2 = useMutation(handleSubmit, mutationOptions);\n' +
+        "const infQuery = useInfiniteQuery<Result, HTTPError>(['notifs'], (params) => getNotifications(...params).then((res) => formatNotifications(res, projectIdMap, user?.email)), { enabled });",
     );
     project.addSourceFileAtPath(testFilePath);
 
@@ -52,6 +53,9 @@ describe('react-query-v5-migrate', () => {
     expect(updatedContent).toContain('useMutation({ mutationFn: handleSubmit })');
     expect(updatedContent).toContain(
       'useMutation({ mutationFn: handleSubmit, ...mutationOptions })',
+    );
+    expect(updatedContent).toContain(
+      "const infQuery = useInfiniteQuery<Result, HTTPError>({ queryKey: ['notifs'], queryFn: (params) => getNotifications(...params).then((res) => formatNotifications(res, projectIdMap, user?.email) }), { enabled });",
     );
 
     fs.unlinkSync(testFilePath);

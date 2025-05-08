@@ -24,7 +24,7 @@ export const reactQueryV5Migrate: Callback = (project, filePath) => {
       const origName = namedImport.getName();
       const aliasNode = namedImport.getAliasNode();
       const localName = aliasNode ? aliasNode.getText() : origName;
-      if (origName === 'useQuery') {
+      if (['useQuery', 'useInfiniteQuery'].includes(origName)) {
         const calls = sourceFile
           .getDescendantsOfKind(SyntaxKind.CallExpression)
           .filter(
