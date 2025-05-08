@@ -29,6 +29,53 @@ afterEach(() => {
   }
 });
 
+// Tests for react-query v5 migration
+describe('react-query-v5-migrate', () => {
+  it('should migrate useQuery and useMutation calls to object syntax', () => {
+    fs.writeFileSync(
+      testFilePath,
+      "import { useQuery, useMutation } from '@tanstack/react-query';\n" +
+        "const data1 = useQuery(['key1'], fetchData1);\n" +
+        "const data2 = useQuery(['key2'], fetchData2, queryOptions);\n" +
+        'const mut1 = useMutation(handleSubmit);\n' +
+        'const mut2 = useMutation(handleSubmit, mutationOptions);',
+    );
+    project.addSourceFileAtPath(testFilePath);
+
+    processTarget(project, testFilePath, 'react-query-v5-migrate');
+
+    const updatedContent = fs.readFileSync(testFilePath, 'utf-8');
+    expect(updatedContent).toContain("useQuery({ queryKey: ['key1'], queryFn: fetchData1 })");
+    expect(updatedContent).toContain(
+      "useQuery({ queryKey: ['key2'], queryFn: fetchData2, ...queryOptions })",
+    );
+    expect(updatedContent).toContain('useMutation({ mutationFn: handleSubmit })');
+    expect(updatedContent).toContain(
+      'useMutation({ mutationFn: handleSubmit, ...mutationOptions })',
+    );
+
+    fs.unlinkSync(testFilePath);
+  });
+
+  it('should respect alias imports for useQuery and useMutation', () => {
+    fs.writeFileSync(
+      testFilePath,
+      "import { useQuery as q, useMutation as m } from '@tanstack/react-query';\n" +
+        "const data = q(['aliasKey'], aliasFetch);\n" +
+        'const mut = m(aliasMutate);',
+    );
+    project.addSourceFileAtPath(testFilePath);
+
+    processTarget(project, testFilePath, 'react-query-v5-migrate');
+
+    const updatedContent = fs.readFileSync(testFilePath, 'utf-8');
+    expect(updatedContent).toContain("q({ queryKey: ['aliasKey'], queryFn: aliasFetch })");
+    expect(updatedContent).toContain('m({ mutationFn: aliasMutate })');
+
+    fs.unlinkSync(testFilePath);
+  });
+});
+
 describe('convertImportsToJs', () => {
   it('should append .js to relative imports', () => {
     fs.writeFileSync(

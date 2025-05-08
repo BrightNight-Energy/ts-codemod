@@ -1,8 +1,10 @@
-# Typescript Import Codemod
+# Typescript Codemod
 
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 ![GitHub CI](https://github.com/BrightNight-Energy/ts-import-codemod/actions/workflows/cicd.yml/badge.svg)
 [![npm version](https://badge.fury.io/js/ts-import-codemod.svg)](https://badge.fury.io/js/ts-import-codemod)
+
+A collection of mostly random codemods you (might) find helpful.
 
 ## Codemods
 
@@ -87,6 +89,20 @@ import { Data } from "plotly.js";
 > [!NOTE]
 > As noted in the comment above, the 'Type' modifier in the import statement may be dropped.
 > A linter like [biome](https://biomejs.dev/) will add these back in.
+
+### Tanstack's React Query v4 to v5
+
+Will turn
+```typescript jsx
+useQuery('todos', fetchTodos, { enabled: false });
+useMutation(createTodo, { onSuccess });
+```
+
+into
+```typescript jsx
+useQuery({ queryKey: 'todos', queryFn: fetchTodos, enabled: false });
+useMutation({ mutationFn: createTodo, onSuccess });
+```
 
 ## Installation
 

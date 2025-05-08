@@ -1,14 +1,13 @@
-import type { Project } from 'ts-morph';
+import type { Callback } from '../types.js';
 
-export function mergeDuplicateImports(project: Project, filePath: string) {
+export const mergeDuplicateImports: Callback = (project, filePath) => {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
   if (!sourceFile) {
-    // biome-ignore lint/suspicious/noConsole: <explanation>
     console.error(`File not found in ts-morph project: ${filePath}`);
-    return 0;
+    return { fileCount: 0 };
   }
 
-  let modified = false;
+  let modifiedCount = 0;
   const importMap = new Map<
     string,
     {
@@ -56,7 +55,7 @@ export function mergeDuplicateImports(project: Project, filePath: string) {
 
     // Remove original import
     importDecl.remove();
-    modified = true;
+    modifiedCount += 1;
   });
 
   // Reconstruct the merged imports
@@ -81,12 +80,14 @@ export function mergeDuplicateImports(project: Project, filePath: string) {
     }
   });
 
-  if (modified) {
-    // biome-ignore lint/suspicious/noConsole: console ok here
+  if (modifiedCount) {
     console.log('  ✏', sourceFile.getFilePath());
     sourceFile.saveSync();
-    return 1;
+    return {
+      fileCount: 1,
+      transformed: [{ name: 'duplicateImportsMerged', count: modifiedCount }],
+    };
   }
 
-  return 0;
-}
+  return { fileCount: 0 };
+};

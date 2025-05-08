@@ -1,16 +1,16 @@
-import type { Project } from 'ts-morph';
+import type { Callback } from '../types.js';
 
 const ignoredFileExtensions = ['.svg', '.png', '.css'];
 
-export function convertImportsToJs(project: Project, filePath: string) {
+export const convertImportsToJs: Callback = (project, filePath) => {
   const sourceFile = project.addSourceFileAtPathIfExists(filePath);
   if (!sourceFile) {
-    // biome-ignore lint/suspicious/noConsole: ok here
     console.error(`File not found in ts-morph project: ${filePath}`);
-    return 0;
+    return { fileCount: 0 };
   }
 
-  let modified = false;
+  let jsonImportModifiedCount = 0;
+  let jsImportModifiedCount = 0;
 
   sourceFile.getImportDeclarations().forEach((importDeclaration) => {
     const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
@@ -29,23 +29,27 @@ export function convertImportsToJs(project: Project, filePath: string) {
         `$1${moduleSpecifier}$1 with { type: 'json' };`,
       );
       importDeclaration.replaceWithText(updatedText);
-      modified = true;
+      jsonImportModifiedCount += 1;
       return;
     }
 
     if (!moduleSpecifier.endsWith('.js')) {
       const updatedSpecifier = `${moduleSpecifier}.js`;
       importDeclaration.setModuleSpecifier(updatedSpecifier);
-      modified = true;
+      jsImportModifiedCount += 1;
     }
   });
 
-  if (modified) {
-    // biome-ignore lint/suspicious/noConsole: ok here
+  if (jsImportModifiedCount || jsonImportModifiedCount) {
     console.log('  ✏', sourceFile.getFilePath().toString());
     sourceFile.saveSync();
-    return 1;
+    return {
+      fileCount: 1,
+      transformed: [
+        { name: 'jsImports', count: jsImportModifiedCount },
+        { name: 'jsonImports', count: jsonImportModifiedCount },
+      ],
+    };
   }
-
-  return 0;
-}
+  return { fileCount: 0 };
+};
